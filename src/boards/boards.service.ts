@@ -27,4 +27,13 @@ export class BoardsService {
       board.id === id;
     });
   }
+  deleteBoard(id: string): void {
+    this.boards = this.boards.filter((board) => board.id !== id);
+    //특정 id를 제외하고 boards에 저장
+  }
+  updateBoardStatus(id: string, status: BoardStatus): Board {
+    const board = this.getBoardById(id);
+    board.status = status;
+    return board;
+  }
 }
