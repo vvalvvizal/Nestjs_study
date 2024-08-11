@@ -8,6 +8,7 @@ import {
   Patch,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum';
 import { BoardsService } from './boards.service';
@@ -18,10 +19,10 @@ import { Board } from './board.entity';
 @Controller('boards')
 export class BoardsController {
   constructor(private boardsService: BoardsService) {}
-  // @Get('/')
-  // getAllBoard(): Board[] {
-  //   return this.boardsService.getAllBoards();
-  // }
+  @Get('/')
+  getAllBoard(): Promise<Board[]> {
+    return this.boardsService.getAllBoards();
+  }
   // @Post()
   // @UsePipes(ValidationPipe)
   // createBoard(@Body() createBoardDto: CreateBoardDto): Board {
@@ -40,6 +41,19 @@ export class BoardsController {
   // getBoardById(@Param('id') id: string): Board {
   //   return this.boardsService.getBoardById(id);
   // }
+  @Delete('/:id')
+  deleteBoard(@Param('id', ParseIntPipe) id): Promise<void> {
+    return this.boardsService.deleteBoard(id);
+  }
+
+  @Patch('/:id/status')
+  updateBoardStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', BoardStatusValidationPipe) status: BoardStatus,
+  ) {
+    return this.boardsService.updateBoardStatus(id, status);
+  }
+
   // @Delete('/:id')
   // deleteBoard(@Param('id') id: string): void {
   //   this.boardsService.deleteBoard(id);
