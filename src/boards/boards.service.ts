@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Board } from './board.model';
 
 @Injectable()
 export class BoardsService {
@@ -7,4 +8,6 @@ export class BoardsService {
   getAllBoards() {
     return this.boards;
   }
+
+  createBoard();
 }
