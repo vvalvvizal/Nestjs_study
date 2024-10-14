@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateBoardDto {
-  //board
+  //board 생성을 위한 dto
   @IsNotEmpty()
   title: string;
 
