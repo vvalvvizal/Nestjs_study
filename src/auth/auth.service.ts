@@ -19,6 +19,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  //signin
   async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentialsDto;
 
@@ -39,6 +40,7 @@ export class AuthService {
       }
     }
   }
+  //signup
   async validateUser(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {

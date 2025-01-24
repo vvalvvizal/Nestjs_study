@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   ParseIntPipe,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum';
 import { BoardsService } from './boards.service';
@@ -23,10 +24,12 @@ import { User } from '../auth/user.entity';
 @Controller('boards')
 @UseGuards(AuthGuard('jwt'))
 export class BoardsController {
+  private logger = new Logger('Boards');
   constructor(private boardsService: BoardsService) {}
   @Get('/')
-  getAllBoard(): Promise<Board[]> {
-    return this.boardsService.getAllBoards();
+  getAllBoard(@GetUser() user: User): Promise<Board[]> {
+    this.logger.verbose(`User ${user.username} trying to get all boards`);
+    return this.boardsService.getAllBoards(user);
   }
   // @Post()
   // @UsePipes(ValidationPipe)
@@ -36,10 +39,13 @@ export class BoardsController {
   @Post()
   @UsePipes(ValidationPipe)
   CreateBoard(
-    @Body() CreateBoardDto: CreateBoardDto,
+    @Body() createBoardDto: CreateBoardDto,
     @GetUser() user: User,
   ): Promise<Board> {
-    return this.boardsService.createBoard(CreateBoardDto, user);
+    this.logger.verbose(
+      `User ${user.username} creating a new board. Payload: ${JSON.stringify(createBoardDto)}`,
+    );
+    return this.boardsService.createBoard(createBoardDto, user);
   }
   @Get('/:id')
   getBoardById(@Param('id') id: number): Promise<Board> {
@@ -50,8 +56,11 @@ export class BoardsController {
   //   return this.boardsService.getBoardById(id);
   // }
   @Delete('/:id')
-  deleteBoard(@Param('id', ParseIntPipe) id): Promise<void> {
-    return this.boardsService.deleteBoard(id);
+  deleteBoard(
+    @Param('id', ParseIntPipe) id,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.boardsService.deleteBoard(id, user);
   }
 
   @Patch('/:id/status')
